@@ -3,47 +3,21 @@ body {
   margin: 0;
   padding: 0;
 }
-.layout {
-  display: flex;
-}
-.sidebar {
-  width: 200px;
-  background: #f4f4f4;
-  padding: 20px;
-}
-.main-content {
-  flex: 1;
-  padding: 20px;
-}
-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-  background: #f4f4f4;
-}
-.dropdown-menu {
-  list-style: none;
+
+h1, h2, h3 {
   margin: 0;
-  padding: 0;
-  position: absolute;
-  background: white;
-  border: 1px solid #ccc;
-  width: 100px;
 }
-.dropdown-menu li {
-  padding: 10px;
-  cursor: pointer;
+
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
-.dropdown-menu li:hover {
-  background: #f4f4f4;
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
 }
-.cards {
-  display: flex;
-  gap: 16px;
-}
-.card {
-  border: 1px solid #ccc;
-  padding: 16px;
-  border-radius: 8px;
-  flex: 1;
+
+th {
+  background-color: #f4f4f4;
 }

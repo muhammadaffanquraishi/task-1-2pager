@@ -1,73 +1,62 @@
-import { useState, useEffect } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { useRouter } from 'next/router';
-import Layout from '../components/Layout';
-import { useFormData } from '../context/FormDataContext';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useFormContext } from '../src/context/FormContext';
+import SideMenu from '../src/components/SideMenu';
+import { toast } from 'react-toastify';
 
-const validationSchema = Yup.object({
-  email: Yup.string().email('Invalid email format').required('Required'),
-  username: Yup.string().required('Required'),
-  phone: Yup.string().matches(/^[0-9]+$/, 'Must be only digits').required('Required'),
-  age: Yup.number().required('Required').positive().integer(),
-});
+const schema = yup.object({
+  email: yup.string().email('Invalid email').required('Email is required'),
+  username: yup.string().min(3, 'Username must be at least 3 characters').required('Username is required'),
+  phone: yup.string().matches(/^\d+$/, 'Phone number must be numeric').required('Phone number is required'),
+  age: yup.number().min(18, 'You must be at least 18').required('Age is required')
+}).required();
 
-const FormPage = () => {
-  const router = useRouter();
-  const { setFormData } = useFormData();
-  const [mounted, setMounted] = useState(false);
+export default function Home() {
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema)
+  });
+  const { setFormData } = useFormContext();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
-
-
-  const handleSubmit = (values) => {
-    setFormData(values);
-    router.push('/second');
+  const onSubmit = (data) => {
+    try {
+      setFormData(data);
+      // Redirect to data page
+      window.location.href = '/data';
+    } catch (error) {
+      toast.error('An error occurred while saving the data.');
+    }
   };
 
-
   return (
-    mounted&&(
-    <Layout>
-      <h1>Form Page</h1>
-      <Formik
-        initialValues={{ email: '', username: '', phone: '', age: '' }}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        <Form>
+    <div style={{ display: 'flex' }}>
+      <SideMenu />
+      <main style={{ padding: '20px', flex: 1 }}>
+        <h1>Form Page</h1>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <label>Email</label>
-            <Field type="email" name="email" />
-            <ErrorMessage name="email" component="div" />
+            <label>Email:</label>
+            <input type="email" {...register('email')} />
+            {errors.email && <p>{errors.email.message}</p>}
           </div>
           <div>
-            <label>Username</label>
-            <Field type="text" name="username" />
-            <ErrorMessage name="username" component="div" />
+            <label>Username:</label>
+            <input type="text" {...register('username')} />
+            {errors.username && <p>{errors.username.message}</p>}
           </div>
           <div>
-            <label>Phone</label>
-            <Field type="text" name="phone" />
-            <ErrorMessage name="phone" component="div" />
+            <label>Phone:</label>
+            <input type="text" {...register('phone')} />
+            {errors.phone && <p>{errors.phone.message}</p>}
           </div>
           <div>
-            <label>Age</label>
-            <Field type="number" name="age" />
-            <ErrorMessage name="age" component="div" />
+            <label>Age:</label>
+            <input type="number" {...register('age')} />
+            {errors.age && <p>{errors.age.message}</p>}
           </div>
-          <button type="submit">Save</button>
-        </Form>
-      </Formik>
-    </Layout>
-    )
+          <button type="submit">Save Data</button>
+        </form>
+      </main>
+    </div>
   );
-};
-
-export default FormPage;
+}

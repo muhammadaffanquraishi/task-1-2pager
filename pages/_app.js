@@ -1,14 +1,14 @@
 import '../styles/globals.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { FormDataProvider } from '../context/FormDataContext';
+import { FormProvider } from '../src/context/FormContext';
 
 function MyApp({ Component, pageProps }) {
   return (
-    <FormDataProvider>
+    <FormProvider>
       <Component {...pageProps} />
       <ToastContainer />
-    </FormDataProvider>
+    </FormProvider>
   );
 }
 
