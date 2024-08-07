@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useFormContext } from '../src/context/FormContext';
-import SideMenu from '../src/components/SideMenu';
-import { toast } from 'react-toastify';
+import { useEffect, useState } from "react";
+import { useFormContext } from "../src/context/FormContext";
+import SideMenu from "../src/components/SideMenu";
+import { toast } from "react-toastify";
 
 export default function Data() {
   const { formData } = useFormContext();
@@ -9,9 +9,9 @@ export default function Data() {
 
   useEffect(() => {
     if (!formData) {
-      toast.error('No data found. Redirecting to the form page.');
+      toast.error("No data found. Redirecting to the form page.");
       // Redirect to form page if no data
-      window.location.href = '/';
+      window.location.href = "/";
     }
   }, [formData]);
 
@@ -22,18 +22,39 @@ export default function Data() {
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: "flex" }}>
       <SideMenu />
-      <main style={{ padding: '20px', flex: 1 }}>
-        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <main style={{ padding: "20px", flex: 1 }}>
+        <header
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <h1>Data Page</h1>
           <div>
-            <button onClick={handleDropdownToggle}>{formData?.username || 'User'}</button>
+            <button onClick={handleDropdownToggle}>
+              {formData?.username || "User"}
+            </button>
             {showDropdown && (
-              <div style={{ position: 'absolute', background: '#fff', border: '1px solid #ccc', padding: '10px' }}>
-                <button onClick={() => handleDropdownAction('Update')}>Update</button>
-                <button onClick={() => handleDropdownAction('Signout')}>Signout</button>
-                <button onClick={() => handleDropdownAction('About')}>About</button>
+              <div
+                style={{
+                  position: "absolute",
+                  background: "#fff",
+                  border: "1px solid #ccc",
+                  padding: "10px",
+                }}
+              >
+                <button onClick={() => handleDropdownAction("Update")}>
+                  Update
+                </button>
+                <button onClick={() => handleDropdownAction("Signout")}>
+                  Signout
+                </button>
+                <button onClick={() => handleDropdownAction("About")}>
+                  About
+                </button>
               </div>
             )}
           </div>
@@ -62,20 +83,20 @@ export default function Data() {
             )}
           </tbody>
         </table>
-        <div style={{ marginTop: '20px', display: 'flex', gap: '20px' }}>
-          <div style={{ border: '1px solid #ccc', padding: '10px', flex: 1 }}>
+        <div style={{ marginTop: "20px", display: "flex", gap: "20px" }}>
+          <div style={{ border: "1px solid #ccc", padding: "10px", flex: 1 }}>
             <h3>Card 1</h3>
             <p>This is some information about the website.</p>
           </div>
-          <div style={{ border: '1px solid #ccc', padding: '10px', flex: 1 }}>
+          <div style={{ border: "1px solid #ccc", padding: "10px", flex: 1 }}>
             <h3>Card 2</h3>
             <p>More details about our services and offerings.</p>
           </div>
-          <div style={{ border: '1px solid #ccc', padding: '10px', flex: 1 }}>
+          <div style={{ border: "1px solid #ccc", padding: "10px", flex: 1 }}>
             <h3>Card 3</h3>
             <p>Additional information on features and benefits.</p>
           </div>
-          <div style={{ border: '1px solid #ccc', padding: '10px', flex: 1 }}>
+          <div style={{ border: "1px solid #ccc", padding: "10px", flex: 1 }}>
             <h3>Card 4</h3>
             <p>Other relevant data and insights.</p>
           </div>
