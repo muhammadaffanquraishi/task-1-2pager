@@ -1,33 +1,49 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.layout {
+  display: flex;
+}
+.sidebar {
+  width: 200px;
+  background: #f4f4f4;
+  padding: 20px;
+}
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background: #f4f4f4;
+}
+.dropdown-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  width: 100px;
+}
+.dropdown-menu li {
+  padding: 10px;
+  cursor: pointer;
+}
+.dropdown-menu li:hover {
+  background: #f4f4f4;
+}
+.cards {
+  display: flex;
+  gap: 16px;
+}
+.card {
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 8px;
+  flex: 1;
 }
