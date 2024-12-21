@@ -3,6 +3,7 @@ import {
   Box,
   Heading,
   Table,
+  Text,
   Thead,
   Tbody,
   Tr,
@@ -14,12 +15,32 @@ import {
 import axios from "axios";
 import { useRouter } from "next/router";
 import withAuth from "../utils/withAuth";
-import Sidebar from "@/components/sidebar";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const toast = useToast();
   const router = useRouter();
+  const [totalCommission, setTotalCommission] = useState(0);
+
+  useEffect(() => {
+    const fetchTotalCommission = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/admin/commissions",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure you're sending the token
+            },
+          }
+        );
+        setTotalCommission(response.data.totalCommission);
+      } catch (error) {
+        console.error("Error fetching total commission:", error);
+      }
+    };
+
+    fetchTotalCommission();
+  }, []);
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -29,43 +50,62 @@ const AdminDashboard = () => {
         return;
       }
       try {
+        console.log("Sending request to /api/auth/me..."); // Debug log
+
         const response = await axios.get("http://localhost:5000/api/auth/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
+
+        console.log("Response from /api/auth/me:", response.data); // Log response
+
+        const loggedInAdminId = response.data.id; // Store admin ID
+        console.log("Logged-in admin ID:", loggedInAdminId);
+  
         if (response.data.role !== "admin") {
           router.push("/");
+          return;
         }
+  
+        // Fetch users and filter out the current admin
+        const fetchUsers = async () => {
+          try {
+            const usersResponse = await axios.get(
+              "http://localhost:5000/api/admin/users",
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            );
+
+            console.log("All users fetched:", usersResponse.data);  
+  
+            const filteredUsers = usersResponse.data.filter(
+              (user) => user._id !== loggedInAdminId // Exclude the current admin
+            );
+            
+            console.log("Filtered users:", filteredUsers);
+            setUsers(filteredUsers);
+          } catch (error) {
+            toast({
+              title: "Error fetching users",
+              description: error.response?.data?.message || "Server error",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+        };
+  
+        fetchUsers();
       } catch (error) {
         router.push("/");
       }
     };
-
+  
     checkAdmin();
-
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/api/admin/users",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setUsers(response.data);
-      } catch (error) {
-        toast({
-          title: "Error fetching users",
-          description: error.response?.data?.message || "Server error",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    };
-
-    fetchUsers();
   }, [toast]);
+  
 
   const handleSuspendUser = async (userId) => {
     try {
@@ -161,12 +201,16 @@ const AdminDashboard = () => {
   return (
     <Box display="flex">
       {/* <Sidebar/> */}
-      <Box ml={["0", "250px"]} p={4} flex="1" bg="gray.100" minHeight="100vh">
+      <Box ml={["0", "250px"]} p={4} flex="1" minHeight="100vh">
         <Heading as="h1" size="lg" mb={6}>
           Admin Dashboard
         </Heading>
 
-        <Table variant="simple" bg="white" borderRadius="md" boxShadow="sm">
+        <Text fontSize="xl" fontWeight="bold">
+          Total Commission Earned: ${totalCommission.toFixed(2)}
+        </Text>
+
+        <Table variant="simple" borderRadius="md" boxShadow="sm">
           <Thead>
             <Tr>
               <Th>Name</Th>

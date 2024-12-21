@@ -51,7 +51,7 @@ const LoginPage = () => {
         if (userRole === 'admin') {
           router.push('/admin/dashboard');  // Redirect to admin dashboard
         } else {
-          router.push('/dashboard');  // Redirect to normal dashboard
+          router.push('/');  // Redirect to normal dashboard
         }
       }
     } catch (error) {
@@ -77,14 +77,13 @@ const LoginPage = () => {
   };
 
   return (
-    <Box minH="100vh" display="flex" justifyContent="center" alignItems="center" bg="gray.50">
+    <Box minH="100vh" display="flex" justifyContent="center" alignItems="center">
       <Box 
         p={8} 
         maxW="md" 
         borderWidth={1} 
         borderRadius="lg" 
         boxShadow="lg" 
-        bg="white"
       >
         <VStack spacing={4}>
           <Heading as="h1" size="lg" mb={6} textAlign="center">
@@ -122,7 +121,7 @@ const LoginPage = () => {
             </VStack>
           </form>
 
-          <Text fontSize="sm" color="gray.600">
+          <Text fontSize="sm">
             Don't have an account? <a href="/register" style={{ color: 'teal.500' }}>Sign up</a>
           </Text>
         </VStack>

@@ -60,12 +60,22 @@ const Sidebar = () => {
             Dashboard
           </Link>
         )}
-        <Link
-          href="/admin/categories"
-          _hover={{ textDecoration: "none", color: "teal.300" }}
-        >
-          Manage Categories and Keywords
-        </Link>
+        {isAdmin && (
+          <Link
+            href="/admin/categories"
+            _hover={{ textDecoration: "none", color: "teal.300" }}
+          >
+            Manage Categories and Keywords
+          </Link>
+        )}
+         {isAdmin && (
+          <Link
+            href="/admin/adminServicePage"
+            _hover={{ textDecoration: "none", color: "teal.300" }}
+          >
+            Manage Services
+          </Link>
+        )}
         <Link
           href="/profile"
           _hover={{ textDecoration: "none", color: "teal.300" }}
@@ -78,12 +88,13 @@ const Sidebar = () => {
         >
           Bookings
         </Link>
-        <Link
-          href="/settings"
-          _hover={{ textDecoration: "none", color: "teal.300" }}
+        {!isAdmin &&
+        <Link href="/userProfileForm"
+        _hover={{ textDecoration: "none", color: "teal.300" }}
         >
-          Settings
+          Add Details
         </Link>
+        }
       </VStack>
     </Box>
   );

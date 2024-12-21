@@ -44,7 +44,7 @@ const Home = () => {
   const handleSearch = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/search`, {
-        params: { keyword },
+        params: { searchTerm: keyword },
       });
       const results = response.data;
 
@@ -110,30 +110,6 @@ const Home = () => {
         </Button>
       </Flex>
 
-      {/* Featured Categories */}
-      <Box mt={10}>
-        <Heading size="lg" mb={5}>
-          Featured Categories
-        </Heading>
-        <SimpleGrid columns={[1, null, 2, 3]} spacing={10}>
-          <ServiceCard
-            icon={FaCode}
-            title="Web Development"
-            description="Custom web development services tailored to your business needs."
-          />
-          <ServiceCard
-            icon={FaMobileAlt}
-            title="Mobile App Development"
-            description="Design and develop mobile apps for Android and iOS platforms."
-          />
-          <ServiceCard
-            icon={FaLaptop}
-            title="UI/UX Design"
-            description="Create intuitive and engaging user interfaces for your applications."
-          />
-        </SimpleGrid>
-      </Box>
-
       {/* Search Results Section */}
       {professionals.length > 0 && (
         <Box mt={10}>
@@ -158,10 +134,56 @@ const Home = () => {
                 Keywords:{" "}
                 {professional.keywords.map((kw) => kw.keyword).join(", ")}
               </Text>
+
+              {/* Buttons for View Profile and Hire */}
+              <Flex mt={4} gap={4}>
+                <Button
+                  colorScheme="teal"
+                  onClick={() =>
+                    router.push(`/professionalProfile/${professional._id}`)
+                  }
+                >
+                  View Profile
+                </Button>
+                <Button
+                  colorScheme="blue"
+                  onClick={() =>
+                    router.push(
+                      `/bookingForm?professionalId=${professional._id}`
+                    )
+                  }
+                >
+                  Hire
+                </Button>
+              </Flex>
             </Box>
           ))}
         </Box>
       )}
+
+      {/* Featured Categories */}
+      <Box mt={10}>
+        <Heading size="lg" mb={5}>
+          Featured Categories
+        </Heading>
+        <SimpleGrid columns={[1, null, 2, 3]} spacing={10}>
+          <ServiceCard
+            icon={FaCode}
+            title="Web Development"
+            description="Custom web development services tailored to your business needs."
+          />
+          <ServiceCard
+            icon={FaMobileAlt}
+            title="Mobile App Development"
+            description="Design and develop mobile apps for Android and iOS platforms."
+          />
+          <ServiceCard
+            icon={FaLaptop}
+            title="UI/UX Design"
+            description="Create intuitive and engaging user interfaces for your applications."
+          />
+        </SimpleGrid>
+      </Box>
 
       {/* Additional Sections */}
       <Box mt={10}>
