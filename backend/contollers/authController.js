@@ -1,6 +1,6 @@
-const User =require('./../models/user');
-const jwt = require ('jsonwebtoken');
-const dotenv = require ('dotenv');
+const User = require("./../models/user");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
@@ -13,19 +13,23 @@ const registerUser = async (req, res) => {
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: "User already exists" });
     }
 
-    const user = new User({ name, email, password, role: role || 'user'});
+    const user = new User({ name, email, password, role: role || "user" });
     await user.save();
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     res.status(201).json({ token });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -38,42 +42,47 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
+      expiresIn: "1h",
     });
 
     res.json({ token });
   } catch (error) {
-    console.log(JSON.stringify(error))
-    res.status(500).json({ message: 'Server error' });
+    console.log(JSON.stringify(error));
+    res.status(500).json({ message: "Server error" });
   }
 };
 // @desc    Get current user's details
 // @access  Private
 const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findById(req.user.id)
+      .select("-password")
+      .populate("services", "name") // Populate service names
+      .populate("categories", "name") // Populate category names
+      .populate("keywords", "keyword"); // Populate keyword fields
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
+    // console.log(user);
     res.json(user);
   } catch (error) {
-      console.error('Error fetching user:',error)
-    res.status(501).json({ message: 'Server error' });
+    console.error("Error fetching user:", error);
+    res.status(501).json({ message: "Server error" });
   }
 };
 
-module.exports ={
+module.exports = {
   registerUser,
   loginUser,
-  getUser
-}
+  getUser,
+};

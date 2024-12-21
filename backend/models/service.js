@@ -18,11 +18,10 @@ const serviceSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  provider: {
+  professional: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Reference to the User model who provides the service
-    required: true,
-  },
+    ref: 'User',
+  }]
 }, {
   timestamps: true, // Automatically adds createdAt and updatedAt fields
 });

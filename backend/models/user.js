@@ -11,14 +11,16 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "professional", "admin"],
       default: "user",
     },
-    isSuspended:{
+    isSuspended: {
       type: Boolean,
       default: false,
     }, // Role field with default value
     fees: { type: Number }, // Fees per project or per hour
     availableHours: { type: Number }, // Available work hours per day
-    availableDates: [{ type: Date }], // Array to store available dates
-    otherDetails: { type: String }, // Any other professional details
+    unavailableDates: {
+      type: [Date],
+      default: [],
+    },
     personalDetails: { type: String }, // Personal details for normal users
     categories: [
       {
@@ -30,6 +32,12 @@ const userSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Keyword", // Reference to Keyword model
+      },
+    ],
+    services: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Service", // Array of services offered by the professional
       },
     ],
   },

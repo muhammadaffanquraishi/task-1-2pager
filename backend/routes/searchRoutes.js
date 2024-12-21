@@ -1,40 +1,57 @@
-const express = require('express');
-const User = require('../models/user');
+const express = require("express");
+const authMiddleware = require('./../middleware/authMiddleware')
+const User = require("../models/user");
+const Keyword = require("../models/Keyword");
+const Category = require("../models/Category");
 
 const router = express.Router();
 
-// Search professionals by keyword
-router.get('/search', async (req, res) => {
-  const { keyword } = req.query; // Get the search keyword from the query string
+// Search professionals by keyword, category, or service name
+router.get("/search",  async (req, res) => {
+  const { searchTerm } = req.query;
 
   try {
-    // Find professionals whose keywords match the search term
-    const professionals = await User.find({
-      role: 'professional',
-      keywords: { $in: [keyword] }, // Match professionals who have the keyword in their keywords array
-    }).populate('categories keywords');
+    let professionals = [];
+
+    // 1. Check if the search term matches a keyword
+    const foundKeyword = await Keyword.findOne({ keyword: searchTerm });
+    if (foundKeyword) {
+      professionals = await User.find({
+        role: "professional",
+        keywords: foundKeyword._id,
+        // _id: { $ne: req.user.id },
+      }).populate("categories keywords services");
+    }
+
+    // 2. If no professionals found by keyword, check if it's a category
+    if (professionals.length === 0) {
+      const foundCategory = await Category.findOne({ name: searchTerm });
+      if (foundCategory) {
+        professionals = await User.find({
+          role: "professional",
+          categories: foundCategory._id,
+          // _id: { $ne: req.user.id },
+        }).populate("categories keywords services");
+      }
+    }
+
+    // 3. If no professionals found by category, check if it's a service name
+    if (professionals.length === 0) {
+      const foundService = await Service.findOne({ name: searchTerm });
+      if (foundService) {
+        professionals = await User.find({
+          role: "professional",
+          services: foundService._id,
+          // _id: { $ne: req.user.id },
+        }).populate("categories keywords services");
+      }
+    }
 
     res.json(professionals);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
+    console.error("Error fetching professionals:", error);
+    res.status(500).json({ message: "Server error", error });
   }
 });
-
-// Search professionals by category and keyword
-router.get('/professionals/by-category', async (req, res) => {
-    const { categoryId } = req.query;
-  
-    try {
-      // Find all professionals who belong to a specific category
-      const professionals = await User.find({
-        role: 'professional',
-        categories: categoryId,  // Filter by category
-      }).populate('categories keywords');
-  
-      res.json(professionals);
-    } catch (error) {
-      res.status(500).json({ message: 'Server error', error });
-    }
-  });
 
 module.exports = router;
