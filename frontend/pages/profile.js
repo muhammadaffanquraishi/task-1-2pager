@@ -82,24 +82,25 @@ const Profile = () => {
       {user ? (
         <>
           <Text>
-            <strong>Name:</strong> {user.name}
+            <strong>Name: </strong> {user.name}
           </Text>
           <Text>
-            <strong>Email:</strong> {user.email}
+            <strong>Email: </strong> {user.email}
           </Text>
           <Text>
-            <strong>Role:</strong> {user.role}
+            <strong>Role: </strong> {user.role}
           </Text>
+          <Text><strong>Personal Details: </strong> {user.personalDetails}</Text>
 
           {user.role === "professional" && (
             <>
               <Text>
-                <strong>Fees:</strong>{" "}
-                {user.fees ? `$${user.Hourly}/hour` : "Not set"}
+                <strong>Fees: </strong>{" "}
+                {user.fees ? `$${user.fees}/hour` : "Not set"}
               </Text>
               <Text>
                 <strong>Available Hours:</strong>{" "}
-                {user.availableHours || "Not set"}
+                {user.availableHours ? `${user.availableHours} hours/day` : "Not set"}
               </Text>
 
               {/* Display services */}

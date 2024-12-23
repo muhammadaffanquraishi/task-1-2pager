@@ -90,6 +90,43 @@ const Bookings = () => {
     }
   };
 
+  const handleCompleteBooking = async (bookingId) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/user/bookings/${bookingId}/status`,
+        { status: "completed" },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setBookings((prevBookings) =>
+        prevBookings.map((b) =>
+          b._id === bookingId
+            ? { ...b, status: response.data.booking.status }
+            : b
+        )
+      );
+
+      toast({
+        title: "Booking marked as completed.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Error completing booking:", error);
+      toast({
+        title: "Error",
+        description: "Failed to complete booking. Please try again later.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   useEffect(() => {
     fetchUserRoleAndBookings();
   }, [toast]);
@@ -141,6 +178,19 @@ const Bookings = () => {
             <Text>
               <strong>Status:</strong> {booking.status}
             </Text>
+
+            {/* Button for Completing the Booking */}
+            {booking.status === "confirmed" && (
+              <Button
+                mt={4}
+                colorScheme="green"
+                size="sm"
+                onClick={() => handleCompleteBooking(booking._id)}
+              >
+                Complete Booking
+              </Button>
+            )}
+
             {/* Admin-only Delete Button */}
             {isAdmin && (
               <Button

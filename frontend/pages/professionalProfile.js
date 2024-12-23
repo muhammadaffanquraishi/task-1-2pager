@@ -89,14 +89,16 @@ const ProfessionalProfile = () => {
       {/* Professional Details */}
       {professional ? (
         <Box mb={6}>
-          <Text>Name: {professional.name}</Text>
-          <Text>
+          <Text><strong>Name: </strong> {professional.name}</Text>
+          <Text><strong>Personal Details: </strong> {professional.personalDetails}</Text>
+          <Text><strong>
             Categories:{" "}
+            </strong>
             {professional.categories?.map((cat) => cat.name).join(", ") ||
               "None"}
           </Text>
-          <Text>
-            Available Hours: {professional.availableHours || "Not set"}
+          <Text><strong>
+            Available Hours: </strong> {professional.availableHours || "Not set"}
           </Text>
         </Box>
       ) : (
@@ -151,6 +153,7 @@ const ProfessionalProfile = () => {
         <Button
           colorScheme="teal"
           mt={4}
+          marginRight={2}
           onClick={() =>
             router.push(`/reviewForm?professionalId=${professional._id}`)
           }

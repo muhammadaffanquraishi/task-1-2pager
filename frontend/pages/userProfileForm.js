@@ -29,7 +29,6 @@ const UserProfileForm = () => {
   const [availableKeywords, setAvailableKeywords] = useState([]);
   const [availableServices, setAvailableServices] = useState([]);
   const [availableHours, setAvailableHours] = useState("");
-  const [hoursPerDay, setHoursPerDay] = useState("");
   const [fees, setFees] = useState("");
   const [selectedDates, setSelectedDates] = useState([]);
   const toast = useToast();
@@ -126,6 +125,8 @@ const UserProfileForm = () => {
       if (name) payload.name = name.trim();
       if (email) payload.email = email.trim();
       if (password.trim()) payload.password = password;
+      if (availableHours) payload.availableHours = availableHours;
+      if (fees) payload.fees = fees;
   
       if (Object.keys(payload).length > 0) {
         await axios.put("http://localhost:5000/api/profile/update", payload, {
@@ -171,6 +172,7 @@ const UserProfileForm = () => {
           );
           changesMade = true;
         }
+      
       }
   
       if (changesMade) {
@@ -282,22 +284,14 @@ const UserProfileForm = () => {
           </Select>
 
           <Input
-            placeholder="Available Hours"
+            placeholder="Available Work Hours Per Day"
             mt={4}
             value={availableHours}
             onChange={(e) => setAvailableHours(e.target.value)}
             type="number"
           />
 
-          <Input
-            placeholder="Hours Per Day"
-            mt={4}
-            value={hoursPerDay}
-            onChange={(e) => setHoursPerDay(e.target.value)}
-            type="number"
-          />
-
-          <Input
+        <Input
             placeholder="Hourly Price"
             mt={4}
             value={fees}
