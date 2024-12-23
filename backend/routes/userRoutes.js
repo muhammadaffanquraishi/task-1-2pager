@@ -25,7 +25,7 @@ router.put("/profile/update", authMiddleware, async (req, res) => {
         "keywords",
         "services",
         "availableHours",
-        "hoursPerDay",
+        "fees",
         "hourlyPrice",
         "availableDates"
       );
