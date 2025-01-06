@@ -8,26 +8,42 @@ const router = express.Router();
 router.post('/bookings', authMiddleware, createBooking);
 
 // Update booking status
-router.put('/user/bookings/:bookingId/status', authMiddleware, async (req, res) => {
-    try {
-      const { bookingId } = req.params;
-      const { status } = req.body;
-  
-      // Check if the booking exists and belongs to the logged-in user
-      const booking = await Booking.findOne({ _id: bookingId, user: req.user.id });
-      if (!booking) {
-        return res.status(404).json({ message: 'Booking not found or not authorized' });
-      }
-  
-      // Update the status
-      booking.status = status;
-      await booking.save();
-  
-      res.json({ message: 'Booking status updated successfully', booking });
-    } catch (error) {
-      console.error('Error updating booking status:', error);
-      res.status(500).json({ message: 'Server error' });
+router.post("/professional/bookings/:bookingId/verify-otp", authMiddleware, async (req, res) => {
+  const { bookingId } = req.params;
+  const { otp } = req.body;
+
+  try {
+    // Ensure the logged-in user is a professional
+    if (req.user.role !== "professional") {
+      return res.status(403).json({ message: "Access denied. Professionals only." });
     }
-  });
+
+    // Find the booking by ID
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found." });
+    }
+
+    // Check if the professional matches the booking
+    if (booking.professional.toString() !== req.user.id) {
+      return res.status(403).json({ message: "You are not authorized for this booking." });
+    }
+
+    // Verify the OTP
+    if (booking.otp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP. Please try again." });
+    }
+
+    // Mark the booking as completed
+    booking.status = "completed";
+    await booking.save();
+
+    res.status(200).json({ message: "Booking completed successfully.", booking });
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+});
 
 module.exports = router;

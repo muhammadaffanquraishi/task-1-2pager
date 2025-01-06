@@ -1,6 +1,7 @@
 const Booking = require("../models/booking.js");
 const Service = require("../models/service.js");
 const User = require("../models/user.js");
+const crypto = require("crypto");
 
 const createBooking = async (req, res) => {
   const { professionalId, serviceId, bookingDate } = req.body;
@@ -18,6 +19,7 @@ const createBooking = async (req, res) => {
     const commissionRate = parseFloat(process.env.COMMISSION_PERCENTAGE || 0.1); // Default to 10% if not set
     const commission = amount * commissionRate;
     const professionalAmount = amount - commission;
+    const otp = crypto.randomInt(100000, 999999).toString(); // Generate a 6-digit OTP
 
     // Create a new booking without amount fields initially
     const booking = new Booking({
@@ -25,6 +27,7 @@ const createBooking = async (req, res) => {
       professional: professionalId, // The professional being hired
       service: serviceId, // The service being booked
       bookingDate: bookingDate, // The date of the booking
+      otp,
       amount: amount, // Total amount paid
       commission: commission, // Platform's commission
       professionalAmount: professionalAmount, // Amount paid to the professional

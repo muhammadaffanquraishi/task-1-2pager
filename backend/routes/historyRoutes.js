@@ -70,6 +70,7 @@ router.get("/professional/bookings", authMiddleware, async (req, res) => {
     }
     const bookings = await Booking.find({ professional: req.user.id })
       .populate("service user")
+      .select("-otp")
       .sort({ bookingDate: -1 }); // Sort by booking date (most recent first)
 
     res.json(bookings);

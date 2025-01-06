@@ -27,6 +27,7 @@ const bookingSchema = new mongoose.Schema(
       enum: ["pending", "confirmed", "completed", "cancelled"],
       default: "pending",
     },
+    otp: { type: String },
     amount: { type: Number, required: true }, // Total amount paid
     commission: { type: Number, required: true }, // Platform's commission
     professionalAmount: { type: Number, required: true }, // Amount paid to the professional

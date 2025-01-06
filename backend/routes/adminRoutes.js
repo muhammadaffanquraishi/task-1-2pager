@@ -104,10 +104,10 @@ router.get(
 // Get all users
 router.get("/users", authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find({ _id: { $ne: req.user.id } }); // Exclude the logged-in admin
     res.json(users);
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching users:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -190,19 +190,24 @@ router.get("/bookings", authMiddleware, adminMiddleware, async (req, res) => {
   }
 });
 
-router.delete("/bookings/:id", authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const booking = await Booking.findById(req.params.id);
+router.delete(
+  "/bookings/:id",
+  authMiddleware,
+  adminMiddleware,
+  async (req, res) => {
+    try {
+      const booking = await Booking.findById(req.params.id);
 
-    if (!booking) {
-      return res.status(404).json({ message: "Booking not found" });
+      if (!booking) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
+
+      await booking.deleteOne();
+      res.json({ message: "Booking deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error });
     }
-
-    await booking.deleteOne();
-    res.json({ message: "Booking deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
   }
-});
+);
 
 module.exports = router;

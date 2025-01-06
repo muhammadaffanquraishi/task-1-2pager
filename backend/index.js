@@ -16,6 +16,7 @@ const keywordRoutes = require('./routes/keywordRoutes.js');
 const professionalRoutes = require('./routes/professionalRoutes');
 const reviewRoutes = require('./routes/reviewRoutes.js')
 const historyRoutes = require('./routes/historyRoutes.js');
+const chatRoutes = require('./routes/chatRoutes.js');
 
 
 
@@ -50,6 +51,7 @@ app.use('/api/keywords', keywordRoutes);
 app.use('/api/professionals', professionalRoutes);
 app.use('/api', reviewRoutes)
 app.use('/api/history', historyRoutes);
+app.use('/api', chatRoutes);
 
 const PORT = process.env.PORT || 5000;
 

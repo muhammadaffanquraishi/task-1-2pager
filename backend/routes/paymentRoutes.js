@@ -9,8 +9,6 @@ const Booking = require('../models/booking'); // Import Booking model
 // Mock payment endpoint
 router.post('/payments', async (req, res) => {
   const { cardNumber, expiryDate, cvv, amount, professionalId, serviceId, bookingId } = req.body;
-    // Log the incoming request data
-    console.log('Payment Request Data:', req.body);
 
   try {
     // Simulate payment validation
