@@ -93,7 +93,7 @@ const Dashboard = () => {
   return (
     <Box display="flex">
       {/* <Sidebar/> */}
-      <Box ml={["0", "250px"]} p={4} flex="1" minHeight="100vh">
+      <Box p={4} flex="1" minHeight="100vh">
         <Heading as="h1" size="lg" mb={6}>
           Welcome to the Dashboard
         </Heading>

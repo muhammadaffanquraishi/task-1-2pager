@@ -60,12 +60,12 @@ const AdminDashboard = () => {
 
         const loggedInAdminId = response.data.id; // Store admin ID
         console.log("Logged-in admin ID:", loggedInAdminId);
-  
+
         if (response.data.role !== "admin") {
           router.push("/");
           return;
         }
-  
+
         // Fetch users and filter out the current admin
         const fetchUsers = async () => {
           try {
@@ -78,14 +78,8 @@ const AdminDashboard = () => {
               }
             );
 
-            console.log("All users fetched:", usersResponse.data);  
-  
-            const filteredUsers = usersResponse.data.filter(
-              (user) => user._id !== loggedInAdminId // Exclude the current admin
-            );
-            
-            console.log("Filtered users:", filteredUsers);
-            setUsers(filteredUsers);
+            console.log("Users fetched from backend:", usersResponse.data);
+            setUsers(usersResponse.data); // Use the backend-filtered list directly
           } catch (error) {
             toast({
               title: "Error fetching users",
@@ -96,16 +90,15 @@ const AdminDashboard = () => {
             });
           }
         };
-  
+
         fetchUsers();
       } catch (error) {
         router.push("/");
       }
     };
-  
+
     checkAdmin();
   }, [toast]);
-  
 
   const handleSuspendUser = async (userId) => {
     try {
@@ -200,17 +193,16 @@ const AdminDashboard = () => {
 
   return (
     <Box display="flex">
-      {/* <Sidebar/> */}
-      <Box ml={["0", "250px"]} p={4} flex="1" minHeight="100vh">
+      <Box p={4} flex="1" minHeight="100vh">
+        {" "}
+        {/* Removed `ml` to align left */}
         <Heading as="h1" size="lg" mb={6}>
           Admin Dashboard
         </Heading>
-
         <Text fontSize="xl" fontWeight="bold">
           Total Commission Earned: ${totalCommission.toFixed(2)}
         </Text>
-
-        <Table variant="simple" borderRadius="md" boxShadow="sm">
+        <Table variant="simple" borderRadius="md" boxShadow="sm" mt={4}>
           <Thead>
             <Tr>
               <Th>Name</Th>

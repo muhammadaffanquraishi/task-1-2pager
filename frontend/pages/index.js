@@ -62,10 +62,9 @@ const Home = () => {
         setProfessionals(results);
       }
     } catch (error) {
-      console.error("Error fetching professionals:", error);
       toast({
         title: "Error",
-        description: "Something went wrong. Please try again later.",
+        description: `No professionals found for "${keyword}". Please try a different keyword.`,
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -81,6 +80,14 @@ const Home = () => {
       setIsAuthenticated(true);
     }
   }, [router]);
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevents adding a new line
+      handleSearch();
+    }
+  };
+  
 
   if (!isAuthenticated) {
     return null; // Return null while checking authentication
@@ -99,12 +106,13 @@ const Home = () => {
           mr={2}
           value={keyword} // Controlled input
           onChange={(e) => setKeyword(e.target.value)} // Update keyword state
+          onKeyDown={handleKeyDown} 
         />
         <Button
           colorScheme="blue"
           size="lg"
           borderRadius="full"
-          onClick={handleSearch}
+          onClick={handleSearch}  
         >
           Search
         </Button>

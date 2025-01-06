@@ -3,6 +3,7 @@ import {
   Box,
   Heading,
   Text,
+  Input,
   VStack,
   Spinner,
   useToast,
@@ -13,6 +14,7 @@ import axios from "axios";
 const Bookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState("");
   const [isAdmin, setIsAdmin] = useState(false); // Track if user is an admin
   const toast = useToast();
 
@@ -30,6 +32,7 @@ const Bookings = () => {
       );
 
       const role = userResponse.data.role;
+      setUserRole(role);
       setIsAdmin(role === "admin");
 
       // Fetch bookings based on role
@@ -90,25 +93,23 @@ const Bookings = () => {
     }
   };
 
-  const handleCompleteBooking = async (bookingId) => {
+  const handleOtpSubmission = async (bookingId, otp) => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.put(
-        `http://localhost:5000/api/user/bookings/${bookingId}/status`,
-        { status: "completed" },
+      const response = await axios.post(
+        `http://localhost:5000/api/professional/bookings/${bookingId}/verify-otp`,
+        { otp },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
+  
       setBookings((prevBookings) =>
         prevBookings.map((b) =>
-          b._id === bookingId
-            ? { ...b, status: response.data.booking.status }
-            : b
+          b._id === bookingId ? { ...b, status: response.data.booking.status } : b
         )
       );
-
+  
       toast({
         title: "Booking marked as completed.",
         status: "success",
@@ -116,10 +117,10 @@ const Bookings = () => {
         isClosable: true,
       });
     } catch (error) {
-      console.error("Error completing booking:", error);
+      console.error("Error verifying OTP:", error);
       toast({
         title: "Error",
-        description: "Failed to complete booking. Please try again later.",
+        description: "Failed to complete booking. Please check the OTP.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -166,29 +167,55 @@ const Bookings = () => {
             width="100%"
           >
             <Text>
-              <strong>Service:</strong> {booking.service.name}
+              <strong>Service: </strong> {booking.service.name}
             </Text>
+            {userRole === "user" ? (
+
+              <Text>
+              <strong>Professional: </strong> {booking.professional.name}
+            </Text>):(
             <Text>
-              <strong>Professional:</strong> {booking.professional.name}
+              <strong>User: </strong> {booking.user.name}
             </Text>
+            )}
             <Text>
-              <strong>Booking Date:</strong>{" "}
+              <strong>Booking Date: </strong>{" "}
               {new Date(booking.bookingDate).toLocaleDateString()}
             </Text>
             <Text>
-              <strong>Status:</strong> {booking.status}
+              <strong>Status: </strong> {booking.status}
             </Text>
+            {userRole === "user" && booking.otp && (
+              <Text>
+                <strong>Booking OTP: </strong> {booking.otp}
+              </Text>
+            )}
 
             {/* Button for Completing the Booking */}
-            {booking.status === "confirmed" && (
+            {userRole === "professional" && booking.status === "confirmed" && (
+              <Box mt={4}>
+              <Input
+                placeholder="Enter OTP"
+                size="sm"
+                onChange={(e) =>
+                  setBookings((prevBookings) =>
+                    prevBookings.map((b) =>
+                      b._id === booking._id ? { ...b, enteredOtp: e.target.value } : b
+                    )
+                  )
+                }
+              />
               <Button
-                mt={4}
+                mt={2}
                 colorScheme="green"
                 size="sm"
-                onClick={() => handleCompleteBooking(booking._id)}
+                onClick={() =>
+                  handleOtpSubmission(booking._id, booking.enteredOtp)
+                }
               >
                 Complete Booking
               </Button>
+            </Box>
             )}
 
             {/* Admin-only Delete Button */}

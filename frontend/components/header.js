@@ -20,12 +20,12 @@ const Header = () => {
   // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("token"); // Remove the token from localStorage
-    setIsAuthenticated(false); // Update state to reflect logout
+    setIsAuthenticated(false); // Update local authentication state
     router.push("/login"); // Redirect to login page after logout
   };
 
   return (
-    <Box bg="teal.500" px={4}>
+    <Box bg="teal.500" position="fixed" right="0" left="0" zIndex="1000" px={4}>
       <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
         <Box fontWeight="bold" color="white">
           Service Booking

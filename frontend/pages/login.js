@@ -36,8 +36,10 @@ const LoginPage = () => {
         });
         
         // Store the token in local storage
-        const token = response.data.token;
+        const {token, user} = response.data;
         localStorage.setItem('token', token);
+        localStorage.setItem('userID', user.id);
+        console.log("Logged in user ID:", user.id)
 
         // Fetch user details (role) using the token
         const userResponse = await axios.get('http://localhost:5000/api/auth/me', {
@@ -83,7 +85,8 @@ const LoginPage = () => {
         maxW="md" 
         borderWidth={1} 
         borderRadius="lg" 
-        boxShadow="lg" 
+        boxShadow="lg"
+        textAlign="center" 
       >
         <VStack spacing={4}>
           <Heading as="h1" size="lg" mb={6} textAlign="center">
