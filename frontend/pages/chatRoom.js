@@ -148,9 +148,9 @@ const ChatRoom = () => {
       <Text fontWeight="bold" mb={4}>
         Chat Room: {chatRoomId}
       </Text>
-      <Text fontWeight="bold" mb={4}>
+      {/* <Text fontWeight="bold" mb={4}>
         Chat with: {otherUserName}
-      </Text>
+      </Text> */}
 
       <VStack align="start" spacing={4} mb={4}>
         {messages.length > 0 ? (
