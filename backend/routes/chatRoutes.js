@@ -34,7 +34,9 @@ router.get("/chats", authMiddleware, async (req, res) => {
   try {
     const chats = await ChatRoom.find({ participants: req.user.id })
       .populate("participants", "name email") // Populate user details
-      .populate("lastMessage")
+      .populate({path: "lastMessage",
+        seletc: "content",
+      })
       .sort({ updatedAt: -1 });
 
     // Format the chats for the response
@@ -46,7 +48,7 @@ router.get("/chats", authMiddleware, async (req, res) => {
       return {
         _id: chat._id,
         otherUser,
-        lastMessage: chat.lastMessage?.text || "No messages yet",
+        lastMessage: chat.lastMessage?.content || "No messages yet",
       };
     });
 
